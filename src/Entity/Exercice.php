@@ -3,10 +3,11 @@
 namespace App\Entity;
 
 use App\Enum\StatutExercice;
+use App\Repository\ExerciceRepository;
 use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: ExerciceRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class Exercice
 {
