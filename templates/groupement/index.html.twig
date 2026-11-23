@@ -9,6 +9,7 @@
     <div class="search-form">
         {{ form_start(formSearchGroupement, { attr: { class: 'form-inline' } }) }}
             {{ form_row(formSearchGroupement.q) }}
+            {{ form_errors(formSearchGroupement.q) }}
             {{ form_row(formSearchGroupement.rechercher) }}
         {{ form_end(formSearchGroupement) }}
     </div>
