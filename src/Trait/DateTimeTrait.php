@@ -6,10 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait DateTimeTrait
 {
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTime $updatedAt = null;
 
     public function getCreatedAt(): ?\DateTimeImmutable
