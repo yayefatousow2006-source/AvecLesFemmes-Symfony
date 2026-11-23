@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Groupement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,28 +17,24 @@ class GroupementRepository extends ServiceEntityRepository
         parent::__construct($registry, Groupement::class);
     }
 
-//    /**
-//     * @return Groupement[] Returns an array of Groupement objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('g')
-//            ->andWhere('g.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('g.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function createSearchQueryBuilder(?string $q): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('g')
+            ->orderBy('g.id', 'ASC');
 
-//    public function findOneBySomeField($value): ?Groupement
-//    {
-//        return $this->createQueryBuilder('g')
-//            ->andWhere('g.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $search = $q !== null ? trim($q) : '';
+
+        if ($search !== '') {
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    'LOWER(g.nom) LIKE LOWER(:q)',
+                    'LOWER(g.adresse) LIKE LOWER(:q)',
+                    'LOWER(g.telephone) LIKE LOWER(:q)'
+                )
+            )
+            ->setParameter('q', '%' . $search . '%');
+        }
+
+        return $qb;
+    }
 }

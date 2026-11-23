@@ -2,9 +2,9 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Role;
+use App\Entity\Exercice;
 use App\Entity\Groupement;
-use App\Entity\Membre;
+use App\Enum\StatutExercice;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -12,24 +12,27 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // 1. Création d'un Rôle de test
-        $role = new Role();
-        $role->setNom('Administrateur');
-        $manager->persist($role);
+        for ($i = 1; $i <= 15; $i++) {
+            $groupement = (new Groupement())
+                ->setNom("Groupement Femmes $i")
+                ->setAdresse($i % 2 === 0 ? "Dakar $i" : "Thiès $i")
+                ->setTelephone('77' . str_pad((string) (1000000 + $i), 7, '0', STR_PAD_LEFT));
 
-        // 2. Création d'un Groupement de test
-        $groupement = new Groupement();
-        $groupement->setNom('Groupement Test');
-        $groupement->setAdresse('Adresse par défaut');
-        $groupement->setTelephone('770000000');
-        $manager->persist($groupement);
+            $exerciceCloture = (new Exercice())
+                ->setStatut(StatutExercice::CLOTURE)
+                ->setGroupement($groupement);
+            $manager->persist($exerciceCloture);
 
-        // 3. Création d'un Membre de test
-        $membre = new Membre();
-        $membre->setNomComplet('Fatou Sow');
-        $manager->persist($membre);
+            if ($i % 4 !== 0) {
+                $exerciceEnCours = (new Exercice())
+                    ->setStatut(StatutExercice::EN_COURS)
+                    ->setGroupement($groupement);
+                $manager->persist($exerciceEnCours);
+            }
 
-        // Enregistrement de tout dans la base de données
+            $manager->persist($groupement);
+        }
+
         $manager->flush();
     }
 }

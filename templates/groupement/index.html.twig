@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Groupements{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Liste des groupements</h1>
+
+    <div class="search-form">
+        {{ form_start(formSearchGroupement, { attr: { class: 'form-inline' } }) }}
+            {{ form_row(formSearchGroupement.q) }}
+            {{ form_row(formSearchGroupement.rechercher) }}
+        {{ form_end(formSearchGroupement) }}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>Téléphone</th>
+                <th>Exercice en cours</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for groupement in groupements %}
+                <tr>
+                    <td>{{ groupement.nom }}</td>
+                    <td>{{ groupement.adresse }}</td>
+                    <td>{{ groupement.telephone }}</td>
+                    <td>
+                        {% if groupement.exerciceEnCours %}
+                            {{ groupement.exerciceEnCours.statutLabel }}
+                        {% else %}
+                            Aucun exercice en cours
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">Aucun groupement trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if pageDTO.nombreDePages > 1 %}
+        <nav class="pagination" aria-label="Pagination">
+            {% if pageDTO.hasPrevious() %}
+                <a href="{{ path(app.request.attributes.get('_route'), { page: pageDTO.pageEnCours - 1 }) }}">Précédent</a>
+            {% endif %}
+
+            {% for p in 1..pageDTO.nombreDePages %}
+                <a href="{{ path(app.request.attributes.get('_route'), { page: p }) }}" class="{{ p == pageDTO.pageEnCours ? 'active' : '' }}">
+                    {{ p }}
+                </a>
+            {% endfor %}
+
+            {% if pageDTO.hasNext() %}
+                <a href="{{ path(app.request.attributes.get('_route'), { page: pageDTO.pageEnCours + 1 }) }}">Suivant</a>
+            {% endif %}
+        </nav>
+    {% endif %}
+</div>
+{% endblock %}
