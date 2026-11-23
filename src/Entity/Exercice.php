@@ -20,6 +20,10 @@ class Exercice
     #[ORM\Column(enumType: StatutExercice::class)]
     private StatutExercice $statut = StatutExercice::EN_COURS;
 
+    #[ORM\ManyToOne(inversedBy: 'exercices')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Groupement $groupement = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -33,6 +37,18 @@ class Exercice
     public function setStatut(StatutExercice $statut): static
     {
         $this->statut = $statut;
+
+        return $this;
+    }
+
+    public function getGroupement(): ?Groupement
+    {
+        return $this->groupement;
+    }
+
+    public function setGroupement(?Groupement $groupement): static
+    {
+        $this->groupement = $groupement;
 
         return $this;
     }
